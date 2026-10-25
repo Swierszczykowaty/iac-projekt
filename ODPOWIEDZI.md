@@ -44,12 +44,19 @@
 
 ## Zadanie 5.3. Dryf — ktoś „poprawił” coś ręcznie
 
-1. Co wykrył `tofu plan` po ręcznym usunięciu kontenera? Jakim symbolem i jakim zdaniem to opisał?
-   - …
-2. Co to jest dryf konfiguracji i dlaczego w zespołach zakazuje się ręcznych zmian w infrastrukturze zarządzanej kodem?
-   - …
-3. Gdzie zapisany jest **stan pożądany**, a skąd narzędzie wie o **stanie rzeczywistym**?
-   - …
+1. **Co wykrył `tofu plan` po ręcznym usunięciu kontenera? Jakim symbolem i jakim zdaniem to opisał?**
+   - Po `docker rm -f web-iac` (pusty `docker ps`) `tofu plan` odświeżył stan (`docker_container.web: Refreshing state... [id=c96ccb9477f6…]`), wykrył, że kontenera zapisanego w stanie już nie ma, i zaplanował jego ponowne utworzenie symbolem **`+`**: `# docker_container.web will be created` oraz `Plan: 1 to add, 0 to change, 0 to destroy.`
+   - Obraz `docker_image.nginx` nadal istniał, więc nie był ruszany — w planie widać od razu jego konkretny identyfikator (`image = "sha256:a3554c0d…"`).
+   - Po `tofu apply` (`Resources: 1 added, 0 changed, 0 destroyed.`) kontener `web-iac` znów działa, z nowym ID `908dda6467a0` i portami `0.0.0.0:8081->80/tcp` — dryf został naprawiony.
+
+2. **Co to jest dryf konfiguracji i dlaczego w zespołach zakazuje się ręcznych zmian w infrastrukturze zarządzanej kodem?**
+   - **Dryf** (*drift*) to rozjazd między stanem opisanym w kodzie / zapisanym w stanie a rzeczywistą infrastrukturą, najczęściej po ręcznej zmianie „na boku”.
+   - Ręczne zmiany są zakazane, bo: nie ma ich w historii repozytorium (brak audytu „kto, kiedy, dlaczego” i przeglądu przed wdrożeniem), następny `apply` je nadpisze lub cofnie, środowiska `dev` i `prod` przestają być identyczne, a odtworzenie po awarii z kodu da inną infrastrukturę niż ta, która faktycznie działała.
+
+3. **Gdzie zapisany jest stan pożądany, a skąd narzędzie wie o stanie rzeczywistym?**
+   - **Stan pożądany** — w plikach konfiguracji `*.tf` (z wartościami zmiennych). Ostatni znany stan utworzonych zasobów jest zapisany w `terraform.tfstate`.
+   - **Stan rzeczywisty** — OpenTofu odpytuje platformę przez providera (tu: API Dockera) w fazie odświeżania (`Refreshing state...`) przy `plan`/`apply` i porównuje wynik ze stanem zapisanym oraz z kodem.
+
 
 ## Zadanie 5.4. Zmienna, zmiana i sprzątanie
 
