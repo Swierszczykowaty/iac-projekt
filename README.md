@@ -24,7 +24,7 @@ Planowane rozszerzenia: moduł wielokrotnego użytku, pokaz dryfu i jego naprawy
 | Osoba | GitHub | Odpowiada za |
 |---|---|---|
 | Piotr Ludkowski | [@RockooAC](https://github.com/RockooAC) | *do uzupełnienia* |
-| *imię i nazwisko* | [@Swierszczykowaty](https://github.com/Swierszczykowaty) | *do uzupełnienia* |
+| Michał Świercz | [@Swierszczykowaty](https://github.com/Swierszczykowaty) | *do uzupełnienia* |
 | *imię i nazwisko* | [@ignacyzielinski](https://github.com/ignacyzielinski) | *do uzupełnienia* |
 | Norbert Ostrowski | [@Norbert935](https://github.com/Norbert935) | *do uzupełnienia* |
 
