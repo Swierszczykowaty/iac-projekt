@@ -1,6 +1,6 @@
 # Temat 5 — odpowiedzi do zadań wstępnych
 
-> Przebieg w GitHub Codespaces (Ubuntu 24.04), OpenTofu 1.13.2, `hashicorp/random` 3.9.1.
+> Przebieg w GitHub Codespaces (Ubuntu 24.04), OpenTofu 1.13.2, `hashicorp/random` 3.9.1, `kreuzwerker/docker` 3.9.0.
 
 ## Zadanie 5.1. Instalacja i pierwszy „zasób”
 
@@ -24,14 +24,23 @@
 
 ## Zadanie 5.2. Kontener opisany kodem
 
-1. Ile zasobów zaplanowano do utworzenia i jakie to zasoby?
-   - …
-2. Co pokazało `docker ps`? Czy kontener utworzony przez OpenTofu czymś się różni od utworzonego ręcznie w temacie 2?
-   - …
-3. Co napisało drugie `tofu apply`? Jak nazywa się ta właściwość narzędzia?
-   - …
-4. Jakie zasoby wymienia `tofu state list`?
-   - …
+1. **Ile zasobów zaplanowano do utworzenia i jakie to zasoby?**
+   - **2 zasoby** (`Plan: 2 to add, 0 to change, 0 to destroy.`):
+     - `docker_image.nginx` — pobranie obrazu `nginx:alpine`,
+     - `docker_container.web` — kontener `web-iac` z mapowaniem portu `8081 → 80` (`ip = "0.0.0.0"`, `protocol = "tcp"`).
+   - Dodatkowo output `adres = "http://localhost:8081"`.
+
+2. **Co pokazało `docker ps`? Czy kontener utworzony przez OpenTofu czymś się różni od utworzonego ręcznie w temacie 2?**
+   - `docker ps` pokazało działający kontener **`web-iac`** (ID `110dd744ebcf`, obraz `a3554c0d0b48`, polecenie `/docker-entrypoint.…`, status `Up`, porty `0.0.0.0:8081->80/tcp`). `curl -s localhost:8081` zwrócił `<title>Welcome to nginx!</title>`.
+   - Sam kontener **niczym się nie różni** od uruchomionego ręcznie przez `docker run` — Docker nie wie, kto go utworzył. Różnica jest w sposobie zarządzania: konfiguracja jest zapisana w kodzie (powtarzalna, w repozytorium, z historią zmian), a OpenTofu zapamiętuje kontener w stanie, więc wykrywa zmiany, potrafi go odtworzyć lub usunąć jednym poleceniem.
+
+3. **Co napisało drugie `tofu apply`? Jak nazywa się ta właściwość narzędzia?**
+   - Odświeżyło stan obu zasobów (`Refreshing state...`) i napisało: `No changes. Your infrastructure matches the configuration.` oraz `Apply complete! Resources: 0 added, 0 changed, 0 destroyed.`
+   - Ta właściwość to **idempotentność** — wielokrotne wykonanie tej samej konfiguracji daje ten sam wynik i nie tworzy duplikatów.
+
+4. **Jakie zasoby wymienia `tofu state list`?**
+   - `docker_container.web`
+   - `docker_image.nginx`
 
 ## Zadanie 5.3. Dryf — ktoś „poprawił” coś ręcznie
 
