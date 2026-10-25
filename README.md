@@ -23,12 +23,12 @@ Planowane rozszerzenia: moduł wielokrotnego użytku, pokaz dryfu i jego naprawy
 
 | Osoba | GitHub | Odpowiada za |
 |---|---|---|
-| Piotr Ludkowski | [@RockooAC](https://github.com/RockooAC) | *do uzupełnienia* |
-| Michał Świercz | [@Swierszczykowaty](https://github.com/Swierszczykowaty) | *do uzupełnienia* |
-| Ignacy Zieliński | [@ignacyzielinski](https://github.com/ignacyzielinski) | *do uzupełnienia* |
-| Norbert Ostrowski | [@Norbert935](https://github.com/Norbert935) | *do uzupełnienia* |
+| Piotr Ludkowski | [@RockooAC](https://github.com/RockooAC) | szkielet `infra/` i kontrakt zmiennych, **sieć**, **wolumin**, kontener **PostgreSQL** (dane na woluminie, hasło z `TF_VAR_db_password`); rozszerzenie: **pokaz dryfu i naprawy**; README: Architektura, Bezpieczeństwo, Sprzątanie |
+| Michał Świercz | [@Swierszczykowaty](https://github.com/Swierszczykowaty) | kontener(y) **aplikacji** (Adminer, `count`), **nginx** jako jedyny wystawiony na zewnątrz + szablon `upstream`; rozszerzenie: **moduł wielokrotnego użytku** `modules/aplikacja` |
+| Ignacy Zieliński | [@ignacyzielinski](https://github.com/ignacyzielinski) | **`dev.tfvars` / `prod.tfvars`**, **wyniki** (`outputs.tf`), test integracyjny obu środowisk; rozszerzenie: **obszary robocze** (*workspaces*); README: Jak uruchomić |
+| Norbert Ostrowski | [@Norbert935](https://github.com/Norbert935) | **GitHub Actions** (`tofu fmt -check`, `tofu validate`), **kosztorys** z AWS Pricing Calculator; rozszerzenia: **`tofu plan` w podsumowaniu CI**, **szkic AWS** (`aws-szkic/`, tylko `validate`); README: Odpowiedniki i kosztorys |
 
-Zadania wstępne 5.1–5.4 wykonaliśmy wspólnie. Kolejne zadania widać w historii zatwierdzeń (*commits*).
+Zadania wstępne 5.1–5.4 wykonaliśmy wspólnie. Szczegółowy plan, kolejność prac, wspólne nazwy zmiennych i zasobów oraz zasady pracy z gałęziami: [`PLAN.md`](PLAN.md). Autorstwo poszczególnych części widać w historii zatwierdzeń (*commits*).
 
 ## Architektura
 
@@ -65,10 +65,15 @@ Struktura repozytorium:
 ├── cwiczenie1/          # zadanie 5.1 — random_pet
 ├── web/                 # zadania 5.2–5.4 — kontener nginx, dryf, zmienna
 ├── ODPOWIEDZI.md        # odpowiedzi do zadań wstępnych
+├── PLAN.md              # plan prac i podział odpowiedzialności
 ├── infra/               # projekt właściwy (w przygotowaniu)
-│   ├── main.tf  variables.tf  outputs.tf
-│   ├── dev.tfvars  prod.tfvars
-└── .github/workflows/   # fmt + validate (w przygotowaniu)
+│   ├── versions.tf  variables.tf          # provider + kontrakt zmiennych
+│   ├── siec.tf  baza.tf                   # sieć, wolumin, PostgreSQL
+│   ├── aplikacja.tf  proxy.tf  nginx.conf.tftpl
+│   ├── outputs.tf  dev.tfvars  prod.tfvars
+│   └── modules/aplikacja/                 # rozszerzenie
+├── aws-szkic/           # rozszerzenie: ta sama architektura dla AWS (tylko validate)
+└── .github/workflows/   # fmt + validate (+ plan)
 ```
 
 ## Jak uruchomić
@@ -94,7 +99,7 @@ Struktura repozytorium:
    tofu apply -var-file=dev.tfvars
    tofu output
    ```
-   Środowisko `prod` uruchamia się analogicznie z `-var-file=prod.tfvars`.
+   Środowisko `prod` uruchamia się analogicznie z `-var-file=prod.tfvars` (`dev`: port 8080, 1 kopia aplikacji; `prod`: port 8090, 3 kopie).
 
 ## Odpowiedniki u dostawców i kosztorys
 
