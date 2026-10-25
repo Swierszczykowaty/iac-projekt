@@ -5,8 +5,8 @@
 ## Zadanie 5.1. Instalacja i pierwszy „zasób”
 
 1. **Jaką nazwę wylosowało OpenTofu? Czy przy drugim `apply` nazwa się zmieniła? Co narzędzie napisało i dlaczego?**
-   - Wylosowana nazwa: **`merry-stud`**.
-   - Przy drugim `apply` nazwa się **nie zmieniła**. OpenTofu odświeżyło stan (`random_pet.nazwa: Refreshing state... [id=merry-stud]`) i napisało: `No changes. Your infrastructure matches the configuration.` oraz `Apply complete! Resources: 0 added, 0 changed, 0 destroyed.`
+   - Wylosowana nazwa: **`closing-sawfly`**.
+   - Przy drugim `apply` nazwa się **nie zmieniła**. OpenTofu odświeżyło stan (`random_pet.nazwa: Refreshing state... [id=closing-sawfly]`) i napisało: `No changes. Your infrastructure matches the configuration.` oraz `Apply complete! Resources: 0 added, 0 changed, 0 destroyed.`
    - Powód: zasób jest już zapisany w pliku stanu, a konfiguracja się nie zmieniła — stan pożądany (kod) i zapisany są zgodne, więc nie ma czego zmieniać. Nazwa jest losowana tylko raz, przy tworzeniu zasobu (idempotentność).
 
 2. **Co oznacza znak `+` w wyniku `tofu plan` i ile zasobów miało zostać dodanych?**
@@ -19,7 +19,7 @@
    - Po `tofu apply`: plik stanu **`terraform.tfstate`**.
 
 4. **Co jest zapisane w pliku `terraform.tfstate`? Dlaczego w prawdziwych projektach nie umieszcza się go w publicznym repozytorium?**
-   - To plik JSON zawierający m.in.: `version` (wersja formatu, `4`), `terraform_version` (`1.13.2`), `serial` (numer kolejnej wersji stanu, `1`), `lineage` (unikalny identyfikator stanu), `outputs` (`nazwa_projektu = "merry-stud"`) oraz `resources` — typ (`random_pet`), nazwę (`nazwa`), providera (`registry.opentofu.org/hashicorp/random`) i **wszystkie atrybuty** zasobu (`id`, `length = 2`, `prefix`, `keepers`…).
+   - To plik JSON zawierający m.in.: `version` (wersja formatu, `4`), `terraform_version` (`1.13.2`), `serial` (numer kolejnej wersji stanu, `1`), `lineage` (unikalny identyfikator stanu), `outputs` (`nazwa_projektu = "closing-sawfly"`) oraz `resources` — typ (`random_pet`), nazwę (`nazwa`), providera (`registry.opentofu.org/hashicorp/random`) i **wszystkie atrybuty** zasobu (`id`, `length = 2`, `prefix`, `keepers`…).
    - Nie umieszcza się go w publicznym repozytorium, bo stan przechowuje atrybuty zasobów **jawnym tekstem** — w prawdziwych projektach także hasła do baz, klucze i tokeny — oraz szczegóły infrastruktury przydatne atakującemu. Przy pracy zespołowej lokalne kopie stanu by się też rozjeżdżały; w praktyce stan trzyma się w zdalnym backendzie z blokadą (np. S3 + DynamoDB).
 
 ## Zadanie 5.2. Kontener opisany kodem
