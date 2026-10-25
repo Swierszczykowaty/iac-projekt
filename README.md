@@ -25,7 +25,7 @@ Planowane rozszerzenia: moduł wielokrotnego użytku, pokaz dryfu i jego naprawy
 |---|---|---|
 | Piotr Ludkowski | [@RockooAC](https://github.com/RockooAC) | *do uzupełnienia* |
 | Michał Świercz | [@Swierszczykowaty](https://github.com/Swierszczykowaty) | *do uzupełnienia* |
-| *imię i nazwisko* | [@ignacyzielinski](https://github.com/ignacyzielinski) | *do uzupełnienia* |
+| Ignacy Zieliński | [@ignacyzielinski](https://github.com/ignacyzielinski) | *do uzupełnienia* |
 | Norbert Ostrowski | [@Norbert935](https://github.com/Norbert935) | *do uzupełnienia* |
 
 Zadania wstępne 5.1–5.4 wykonaliśmy wspólnie. Kolejne zadania widać w historii zatwierdzeń (*commits*).
