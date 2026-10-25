@@ -57,14 +57,21 @@
    - **Stan pożądany** — w plikach konfiguracji `*.tf` (z wartościami zmiennych). Ostatni znany stan utworzonych zasobów jest zapisany w `terraform.tfstate`.
    - **Stan rzeczywisty** — OpenTofu odpytuje platformę przez providera (tu: API Dockera) w fazie odświeżania (`Refreshing state...`) przy `plan`/`apply` i porównuje wynik ze stanem zapisanym oraz z kodem.
 
-
 ## Zadanie 5.4. Zmienna, zmiana i sprzątanie
 
-1. Co pokazał pierwszy `tofu plan` (bez zmiany portu) i dlaczego?
-   - …
-2. Co pokazał plan z portem 8082: zmiana „w miejscu” (`~`) czy zastąpienie (`-/+`)? Dlaczego, skoro zmieniła się tylko jedna liczba?
-   - …
-3. Ile zasobów usunął `tofu destroy`? Co pokazuje teraz `tofu state list`?
-   - …
-4. Jakie dwie zmienne (poza portem) warto by dodać, żeby ten sam kod obsłużył środowiska `dev` i `prod`?
-   - …
+1. **Co pokazał pierwszy `tofu plan` (bez zmiany portu) i dlaczego?**
+   - `No changes. Your infrastructure matches the configuration.`
+   - Zmienna `port_zewnetrzny` ma wartość domyślną **`8081`**, czyli dokładnie tę, która wcześniej była wpisana na sztywno. Zmienił się tylko sposób zapisu w kodzie (stała → zmienna), a nie wynikowa konfiguracja, więc nie ma różnicy względem działającej infrastruktury.
+
+2. **Co pokazał plan z portem 8082: zmiana „w miejscu” (`~`) czy zastąpienie (`-/+`)? Dlaczego, skoro zmieniła się tylko jedna liczba?**
+   - **Zastąpienie `-/+`** (`-/+ destroy and then create replacement`): `# docker_container.web must be replaced`, przy porcie `~ external = 8081 -> 8082 # forces replacement`, `Plan: 1 to add, 0 to change, 1 to destroy.`, a output zmienia się na `adres = "http://localhost:8082"`.
+   - Docker **nie pozwala zmienić mapowania portów istniejącego kontenera** — port ustala się przy jego tworzeniu. Provider oznacza więc ten atrybut jako wymuszający zastąpienie: stary kontener (`a18d5c5f84bf`) został usunięty i utworzony nowy (`250e11465aa1`), mimo że zmieniła się tylko jedna liczba. Obraz `nginx` nie był ruszany. `curl -s localhost:8082` zwrócił `<title>Welcome to nginx!</title>`.
+
+3. **Ile zasobów usunął `tofu destroy`? Co pokazuje teraz `tofu state list`?**
+   - **2 zasoby**: `docker_container.web` i `docker_image.nginx` (`Plan: 0 to add, 0 to change, 2 to destroy.` → `Destroy complete! Resources: 2 destroyed.`), a output `adres` został usunięty.
+   - `tofu state list` **nie zwraca nic** — stan jest pusty. `docker ps` również nie pokazuje żadnego kontenera.
+
+4. **Jakie dwie zmienne (poza portem) warto by dodać, żeby ten sam kod obsłużył środowiska `dev` i `prod`?**
+   - **`srodowisko`** (`dev` / `prod`) — przedrostek nazw zasobów, np. `name = "${var.srodowisko}-web"`, żeby oba środowiska mogły działać obok siebie bez kolizji nazw.
+   - **`liczba_kopii`** — liczba kontenerów aplikacji (`count = var.liczba_kopii`), np. 1 w `dev` i 3 w `prod`.
+   - (alternatywnie **`wersja_obrazu`** — tag obrazu, np. przypięta wersja w `prod` zamiast ruchomego `alpine`).
